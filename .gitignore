@@ -1,5 +1,3 @@
-.idea
-.venv
-instance
-.DS_Store
-__pycache__
+.venv/
+instance/
+__pycache__/

@@ -14,6 +14,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_KEY")
+print(app.secret_key)
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
@@ -44,6 +45,8 @@ class Base(DeclarativeBase):
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI")
+print(os.environ.get("DB_URI"))
+    # postgresql://posts:SUgW9oEyllwezkCc7DFARNmFJAbFA2jH@dpg-cqjmkkmehbks73ce9gvg-a.oregon-postgres.render.com/posts_gvo1
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
