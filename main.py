@@ -37,10 +37,6 @@ gravatar = Gravatar(
 MY_EMAIL = os.environ.get("MY_EMAIL")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 TO_MY_EMAIL = os.environ.get("TO_MY_EMAIL")
-print(MY_EMAIL)
-print(EMAIL_PASSWORD)
-print(TO_MY_EMAIL)
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -260,9 +256,7 @@ def contact():
         with SMTP("smtp.gmail.com") as connection:
             body = f"'Subject: New message from Davlatbek's blog post!\n\nName: {request.form.get('name')}\n"  f"Email address: {request.form.get('email')}\nPhone Number: {request.form.get('phone')}\nMessage:\n{request.form.get('message')}"
             connection.starttls()
-            sleep(2)
             connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
-            sleep(2)
             connection.sendmail(from_addr=MY_EMAIL, to_addrs=TO_MY_EMAIL, msg=body)
         flash("Your message was sent successfully, I hope to reply you soon!\nRegards, Davlatbek.")
         return redirect(url_for('contact'))
