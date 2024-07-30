@@ -12,6 +12,7 @@ from flask_gravatar import Gravatar
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm, ContactForm
 import os
 from smtplib import SMTP
+from time import sleep
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_KEY")
@@ -259,7 +260,9 @@ def contact():
         with SMTP("smtp.gmail.com") as connection:
             body = f"'Subject: New message from Davlatbek's blog post!\n\nName: {request.form.get('name')}\n"  f"Email address: {request.form.get('email')}\nPhone Number: {request.form.get('phone')}\nMessage:\n{request.form.get('message')}"
             connection.starttls()
+            sleep(2)
             connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
+            sleep(2)
             connection.sendmail(from_addr=MY_EMAIL, to_addrs=TO_MY_EMAIL, msg=body)
         flash("Your message was sent successfully, I hope to reply you soon!\nRegards, Davlatbek.")
         return redirect(url_for('contact'))
