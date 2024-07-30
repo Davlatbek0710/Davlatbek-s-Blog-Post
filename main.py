@@ -36,6 +36,9 @@ gravatar = Gravatar(
 MY_EMAIL = os.environ.get("MY_EMAIL")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 TO_MY_EMAIL = os.environ.get("TO_MY_EMAIL")
+print(MY_EMAIL)
+print(EMAIL_PASSWORD)
+print(TO_MY_EMAIL)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -250,20 +253,18 @@ def contact():
     contact_form = ContactForm()
     if contact_form.validate_on_submit():
         with SMTP("smtp.gmail.com") as connection:
+            body = f"'Subject: New message from Davlatbek's blog post!\n\nName: {request.form.get('name')}\n"  f"Email address: {request.form.get('email')}\nPhone Number: {request.form.get('phone')}\nMessage:\n{request.form.get('message')}"
             connection.starttls()
             connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
-            connection.sendmail(from_addr=MY_EMAIL,
-                                to_addrs=TO_MY_EMAIL,
-                                msg="Subject: New message from Davlatbek's blog post!\n\n"
-                                    f"Name: {request.form.get('name')}\n"
-                                    f"Email address: {request.form.get('email')}\n"
-                                    f"Phone Number: {request.form.get('phone')}\n\n"
-                                    f"Message:\n"
-                                    f"{request.form.get('message')}")
-            flash("Your message was sent successfully, I hope to reply you soon!\nRegards, Davlatbek.")
+            connection.sendmail(from_addr=MY_EMAIL, to_addrs=TO_MY_EMAIL, msg=body)
+        flash("Your message was sent successfully, I hope to reply you soon!\nRegards, Davlatbek.")
+        contact_form.name = ''
+        contact_form.email = ''
+        contact_form.phone = ''
+        contact_form.message = ''
         return redirect(url_for('contact'))
     return render_template("contact.html", form=contact_form)
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)
