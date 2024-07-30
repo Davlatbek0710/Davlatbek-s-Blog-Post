@@ -1,4 +1,4 @@
-from flask import Flask, abort, render_template, redirect, url_for, flash
+from flask import Flask, abort, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
@@ -9,8 +9,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
 from functools import wraps
 from flask_gravatar import Gravatar
-from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm, ContactForm
 import os
+from smtplib import SMTP
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_KEY")
@@ -33,6 +34,8 @@ gravatar = Gravatar(
     base_url=None
 )
 
+MY_EMAIL = os.environ.get("MY_EMAIL")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -244,10 +247,25 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["POST", "GET"])
 def contact():
-    return render_template("contact.html")
+    contact_form = ContactForm()
+    if contact_form.validate_on_submit():
+        with SMTP("smtp.gmail.com") as connection:
+            connection.starttls()
+            connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
+            connection.sendmail(from_addr=MY_EMAIL,
+                                to_addrs='davlatkobiljonov@gmail.com',
+                                msg="Subject: New message from Davlatbek's blog post!\n\n"
+                                    f"Name: {request.form.get('name')}\n"
+                                    f"Email address: {request.form.get('email')}\n"
+                                    f"Phone Number: {request.form.get('phone')}\n\n"
+                                    f"Message:\n"
+                                    f"{request.form.get('message')}")
+            flash("Your message was sent successfully, I hope to reply you soon!\nRegards, Davlatbek.")
+        return redirect(url_for('contact'))
+    return render_template("contact.html", form=contact_form)
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)
