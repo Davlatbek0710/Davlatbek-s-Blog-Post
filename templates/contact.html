@@ -1,5 +1,5 @@
 {% include "header.html" %}
-
+{% from "bootstrap5/form.html" import render_form %}
 <!-- Page Header-->
 <header
   class="masthead"
@@ -25,72 +25,87 @@
   <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
-        <p>
-          Want to get in touch? Fill out the form below to send me a message and
-          I will get back to you as soon as possible!
-        </p>
         <div class="my-5">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <p style="color: black; font-weight: bold; font-size: 26px; font-style: Arial Black;">{{ messages[-1] }}</p>
+             <div class="d-flex justify-content-end mb-4">
+              <a
+                class="btn btn-primary float-right"
+                href="{{url_for('contact')}}"
+                >Want to contact more?</a
+              >
+              </div>
+            {% else %}
+            <p>
+            Want to get in touch? Fill out the form below to send me a message and
+            I will get back to you as soon as possible!
+            </p>
+            {{render_form(form)}}
+            {% endif %}
+            {% endwith %}
+
           <!-- * * * * * * * * * * * * * * *-->
           <!-- * * Simplified SB Contact Form for the Tutorial* *-->
-          <form
-            id="contactForm"
-            name="sentMessage"
-            action="{{ url_for('contact') }}"
-            method="post"
-          >
-            <div class="form-floating">
-              <input
-                class="form-control"
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Enter your name..."
-                required
-              />
-              <label for="name">Name</label>
-            </div>
-            <div class="form-floating">
-              <input
-                class="form-control"
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email..."
-                required
-              />
-              <label for="email">Email address</label>
-            </div>
-            <div class="form-floating">
-              <input
-                class="form-control"
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="Enter your phone number..."
-                required
-              />
-              <label for="phone">Phone Number</label>
-            </div>
-            <div class="form-floating">
-              <textarea
-                class="form-control"
-                id="message"
-                name="message"
-                placeholder="Enter your message here..."
-                required
-                style="height: 12rem"
-              ></textarea>
-              <label for="message">Message</label>
-            </div>
-            <br />
-            <button
-              class="btn btn-danger text-uppercase"
-              id="submitButton"
-              type="submit"
-            >
-              In process of development...
-            </button>
-          </form>
+<!--          <form-->
+<!--            id="contactForm"-->
+<!--            name="sentMessage"-->
+<!--            action="{{ url_for('contact') }}"-->
+<!--            method="post"-->
+<!--          >-->
+<!--            <div class="form-floating">-->
+<!--              <input-->
+<!--                class="form-control"-->
+<!--                id="name"-->
+<!--                name="name"-->
+<!--                type="text"-->
+<!--                placeholder="Enter your name..."-->
+<!--                required-->
+<!--              />-->
+<!--              <label for="name">Name</label>-->
+<!--            </div>-->
+<!--            <div class="form-floating">-->
+<!--              <input-->
+<!--                class="form-control"-->
+<!--                id="email"-->
+<!--                name="email"-->
+<!--                type="email"-->
+<!--                placeholder="Enter your email..."-->
+<!--                required-->
+<!--              />-->
+<!--              <label for="email">Email address</label>-->
+<!--            </div>-->
+<!--            <div class="form-floating">-->
+<!--              <input-->
+<!--                class="form-control"-->
+<!--                id="phone"-->
+<!--                name="phone"-->
+<!--                type="tel"-->
+<!--                placeholder="Enter your phone number..."-->
+<!--                required-->
+<!--              />-->
+<!--              <label for="phone">Phone Number</label>-->
+<!--            </div>-->
+<!--            <div class="form-floating">-->
+<!--              <textarea-->
+<!--                class="form-control"-->
+<!--                id="message"-->
+<!--                name="message"-->
+<!--                placeholder="Enter your message here..."-->
+<!--                required-->
+<!--                style="height: 12rem"-->
+<!--              ></textarea>-->
+<!--              <label for="message">Message</label>-->
+<!--            </div>-->
+<!--            <br />-->
+<!--            <button-->
+<!--              class="btn btn-danger text-uppercase"-->
+<!--              id="submitButton"-->
+<!--              type="submit"-->
+<!--            >-->
+<!--              Send-->
+<!--            </button>-->
+<!--          </form>-->
         </div>
       </div>
     </div>
