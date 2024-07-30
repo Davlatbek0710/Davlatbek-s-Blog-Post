@@ -40,6 +40,7 @@ print(MY_EMAIL)
 print(EMAIL_PASSWORD)
 print(TO_MY_EMAIL)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.get_or_404(User, user_id)
@@ -238,7 +239,10 @@ def edit_post(post_id):
 @admin_only
 def delete_post(post_id):
     post_to_delete = db.get_or_404(BlogPost, post_id)
+    comments_to_delete = db.session.execute(db.select(Comment).where(Comment.post_id == post_id)).scalars().all()
     db.session.delete(post_to_delete)
+    for comment in comments_to_delete:
+        db.session.delete(comment)
     db.session.commit()
     return redirect(url_for('get_all_posts'))
 
@@ -258,13 +262,9 @@ def contact():
             connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
             connection.sendmail(from_addr=MY_EMAIL, to_addrs=TO_MY_EMAIL, msg=body)
         flash("Your message was sent successfully, I hope to reply you soon!\nRegards, Davlatbek.")
-        contact_form.name = ''
-        contact_form.email = ''
-        contact_form.phone = ''
-        contact_form.message = ''
         return redirect(url_for('contact'))
     return render_template("contact.html", form=contact_form)
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)
